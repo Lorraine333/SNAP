@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-# In[849]:
+# In[1041]:
 
 import itertools
 import numpy as np
@@ -23,43 +23,46 @@ from __future__ import division # ensures that default division is real number d
 mpl.rc('figure', figsize=[10,6]) 
 
 
-# In[850]:
+# In[1062]:
 
-vertex = pd.read_csv('VERTEX.csv')
+vertex = pd.read_csv('data2/VERTEX.csv')
 for i in range(len(vertex)):
     vertex.iloc[i,0] = vertex.iloc[i,0]-1
-edge = pd.read_csv('EDGE.csv')
+edge = pd.read_csv('data2/EDGE.csv')
 print vertex.shape
+print edge.shape
 
 
-# In[851]:
+# In[1063]:
 
 vertex.head()
+#vertex[vertex['VERTEXID']==117]
 
 
-# In[852]:
+# In[1064]:
 
 edge.head()
 edge.iloc[:10,:]
 
 
-# In[853]:
+# In[1065]:
 
-dot = Digraph(comment='The Round Table')
+dot = Digraph(comment='graph')
 vertex = np.asarray(vertex)
+print vertex[117][:5]
 edge = np.asarray(edge)
 for i in range(len(vertex)):
-    dot.node(str(vertex[i][2]),str(vertex[i][0]))
+    dot.node(str(vertex[i][2]),str(vertex[i][0:2]))
 for j in range(len(edge)):
     dot.edge(str(edge[j][3]),str(edge[j][4]))
 
 
-# In[854]:
+# In[1066]:
 
-dot.render('test-output/round-table')
+dot.render('test-output/graph2')
 
 
-# In[855]:
+# In[1067]:
 
 NodeNum = len(vertex)
 EdgeNum = len(edge)
@@ -77,18 +80,18 @@ for i in range(len(edge)):
         if (vertex[j][2] == edge[i][3]):
             
             startV = vertex[j][0]
-            print "start"
-            print startV
+            #print "start"
+            #print startV
         if(vertex[j][2] == edge[i][4]):
-            print "end"
+            #print "end"
             endV = vertex[j][0]
-            print endV
+            #print endV
     AdjMatrix[endV][startV+1] = 1
 #print AdjMatrix
-print AdjMatrix[:10,:10]
+print AdjMatrix[:10,:]
 
 
-# In[856]:
+# In[1068]:
 
 def updateFlag(val,sorted_attr_row):
     for i in range(len(sorted_attr_row)-1):
@@ -101,7 +104,7 @@ def defineT(attr):
     return dtype
 
 
-# In[857]:
+# In[1069]:
 
 def ACompatible(graph,edge,attr):
     dtype = defineT(attr)
@@ -124,7 +127,7 @@ def ACompatible(graph,edge,attr):
     return groupArr
 
 
-# In[858]:
+# In[1070]:
 
 def DataStruture(result1,edge,attr,graph):
     print "update data structure"
@@ -175,7 +178,7 @@ def DataStruture(result1,edge,attr,graph):
     return PArray,bitMap
 
 
-# In[859]:
+# In[1071]:
 
 def condition(SubGroup,PArray):
     GroupNum = len(SubGroup);
@@ -188,7 +191,7 @@ def condition(SubGroup,PArray):
                 
 
 
-# In[860]:
+# In[1072]:
 
 def Split(BitMap,fixedGNum,TempResult,graph,attr):
     groupNum = len(TempResult)
@@ -260,7 +263,7 @@ def Split(BitMap,fixedGNum,TempResult,graph,attr):
         
 
 
-# In[874]:
+# In[1073]:
 
 def SNAP(graph,edge,attr):
     TempResult = ACompatible(graph,edge,attr)
@@ -281,19 +284,19 @@ def SNAP(graph,edge,attr):
     return TempResult,PArray
 
 
-# In[875]:
+# In[1075]:
 
 attr = ['TYPE']
-vertex = pd.read_csv('VERTEX.csv')
+vertex = pd.read_csv('data2/VERTEX.csv')
 for i in range(len(vertex)):
     vertex.iloc[i,0] = vertex.iloc[i,0]-1
 
 SMRnode,PArray = SNAP(vertex,AdjMatrix,attr)
 
 
-# In[880]:
+# In[1076]:
 
-dot1 = Digraph(comment='Summary Graph')
+dot1 = Digraph(comment='Summary Graph2')
 #vertex = np.asarray(vertex)
 #edge = np.asarray(edge)
 #for i in range(len(vertex)):
@@ -311,7 +314,55 @@ for i in range(len(SMRnode)):
                 for k in range(int(PArray[i][j])):
                     dot1.edge(str(SMRnode[i][0]),str(SMRnode[j][0]))
 
-dot1.render('test-output/summary_Graph')
+dot1.render('test-output/summary_Graph2')
+
+
+# In[1077]:
+
+dot2 = Digraph(comment='ColorGraph2')
+vertex = pd.read_csv('data2/VERTEX.csv')
+#vertex = np.asarray(vertex)
+edge = np.asarray(edge)
+for i in range(len(SMRnode)):
+    if(i==0):
+        color = 'red'
+    if(i==1):
+        color = 'blue'
+    if(i==2):
+        color = 'green'
+    if(i==3):
+        color = 'yellow'
+    if(i==4):
+        color = 'cyan'
+    if(i==5):
+        color = 'magenta'
+    if(i==6):
+        color = 'Purple'
+    if(i==7):
+        color = 'grey'
+    if(i==8):
+        color = 'tan'
+    if(i==9):
+        color = 'MidnightBlue'
+    if(i==10):
+        color = 'chocolate'
+        
+    for j in range(len(SMRnode[i])):
+        #print SMRnode[i][j]
+        hashvalue = vertex.iloc[SMRnode[i][j][0]]['HASH']
+        dot2.node(str(hashvalue),str(SMRnode[i][j]),color = color,style='filled')
+for j in range(len(edge)):
+    dot2.edge(str(edge[j][3]),str(edge[j][4]))
+dot2.render('test-output/ColorGrap2')
+
+
+# In[1026]:
+
+vertex = pd.read_csv('data1/VERTEX.csv')
+print vertex.head()
+t = vertex[vertex['VERTEXID']==1]['HASH']
+print t
+print vertex.iloc[0]['HASH']
 
 
 # In[ ]:
